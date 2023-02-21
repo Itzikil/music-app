@@ -44,7 +44,7 @@ class Piano extends React.Component {
     }
 
     playNote = (key) => {
-        this.state.soundPlayer = new Audio(`/${key}.mp3`)
+        this.state.soundPlayer = new Audio(`./${key}.mp3`)
         this.state.soundPlayer.play()
     }
 
@@ -57,7 +57,7 @@ class Piano extends React.Component {
                 <div className="piano">
                     {notes.map((note, i) => <section key={note + i}>
                         <Key note={note} key={note} setKey={this.setKey} pressedKey={pressedKey} clearKey={this.clearKey} />
-                        <audio key={i} src={`/${note}.mp3`}></audio>
+                        <audio key={i} src={`./${note}.mp3`}></audio>
                     </section>
                     )}
                 </div>
