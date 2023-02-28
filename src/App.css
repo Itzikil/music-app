@@ -75,7 +75,18 @@
 .key p::first-letter {
   text-transform: capitalize;
 }
-
+.key{
+  transition: 0.5s;
+}
 .key.pressed {
   background-color: cadetblue;
+  transition: 0.3s;
+}
+
+.songs-container{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }

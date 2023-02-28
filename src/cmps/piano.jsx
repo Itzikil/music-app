@@ -1,22 +1,26 @@
 import { Key } from "./key"
 import React from "react"
+import { songService } from "../song-service"
 
 class Piano extends React.Component {
     state = {
+        songs: songService.loadSongs(),
         pressedKey: [],
         soundPlayer: null,
-        notes: ['c', 'db', 'd', 'eb', 'e', 'f', 'gb', 'g', 'ab', 'a', 'bb', 'b'],
-        keyNotes: { 'd': 'c', 'r': 'db', 'f': 'd', 't': 'eb', 'g': 'e', 'h': 'f', 'u': 'gb', 'j': 'g', 'i': 'ab', 'k': 'a', 'o': 'bb', 'l': 'b' }
+        notes: songService.notes(),
+        keyNotes: songService.keyNotes(),
     }
+
     componentDidMount() {
         window.addEventListener('keydown', this.setKey)
         window.addEventListener('keyup', this.clearKey)
     }
-    setKey = (ev) => {
+
+    setKey = (ev, autoPlay) => {
         if (ev.code && ev.repeat) return
         let key = ev.key ? this.state.keyNotes[ev.key] : ev
         if (!key) return
-        if (this.state.pressedKey.includes(key)) return
+        if (this.state.pressedKey.includes(key) && !autoPlay) return
         else {
             const pressedKey = [...this.state.pressedKey]
             pressedKey.push(key)
@@ -34,13 +38,30 @@ class Piano extends React.Component {
                 const pressedKey = [...this.state.pressedKey]
                 pressedKey.splice(index, 1)
                 this.setState({ pressedKey })
-                // usePressedKey(list)
-                // setTimeout(() => {
-                //     soundPlayer.pause();
-                //     soundPlayer.currentTime = 0;
-                // },1000)
             }
         }
+    }
+
+    autoPlay = (note, tempo) => {
+        if (!note) return
+        const pressedKey = [...this.state.pressedKey]
+        pressedKey.push(note)
+        this.setState({ pressedKey })
+        this.playNote(note)
+        setTimeout(() => {
+            let index = this.state.pressedKey?.indexOf(note)
+            pressedKey.splice(index, 1)
+            this.setState({ pressedKey })
+        }, tempo / 2)
+    }
+
+    playSong = (notes, tempo) => {
+        notes.map((note, i) => {
+            setTimeout(() => {
+                this.autoPlay(note, tempo)
+                // console.log(this.state.pressedKey)
+            }, (i + 1) * tempo)
+        })
     }
 
     playNote = (key) => {
@@ -49,11 +70,16 @@ class Piano extends React.Component {
     }
 
     render() {
-        const { notes, pressedKey } = this.state
+        const { notes, pressedKey, songs } = this.state
         return (
             <section>
                 <h1>Piano</h1>
                 {/* <button onClick={() => console.log(pressedKey)}>click</button> */}
+                <div className="songs-container">
+                    {songs.map(({ notes, tempo, name }) =>
+                        <button key={name} onClick={() => this.playSong(notes, tempo)}>{name}</button>
+                    )}
+                </div>
                 <div className="piano">
                     {notes.map((note, i) => <section key={note + i}>
                         <Key note={note} key={note} setKey={this.setKey} pressedKey={pressedKey} clearKey={this.clearKey} />

@@ -1,6 +1,4 @@
 export const Key = ({ note, setKey, pressedKey, clearKey }) => {
-    // console.log(pressedKey);
-    // console.log(note);
     return (
         <section>
             <div className={`key ${note.length === 2 ? 'flat' : 'natural'}
