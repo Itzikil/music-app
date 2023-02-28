@@ -1,3 +1,3 @@
-# piano
+# Music App
 
-https://itzikil.github.io/piano/
+https://itzikil.github.io/music-app/
